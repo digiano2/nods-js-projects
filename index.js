@@ -23,7 +23,29 @@ app.get("/", function (req, res) {
 app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
-
+app.get('/api/:date?', function(req, res){
+        let date = req.params.date;
+  let dateObj;
+  let unixDate;
+  let utcDate;
+  let isUnix = /^\d+$/.test(date)
+  if(!date){
+    dateObj = new Date();
+  }
+  else if(date && isUnix){
+    unixDate = parseInt(date);
+    dateObj = new Date(unixDate);
+  }
+  else if(date && !isUnix){
+    dateObj = new Date(date)
+  }
+  if(dateObj.toString() === 'Invalid Date'){
+    res.json({error:'Invalid Date' })
+  }
+  utcDate = dateObj.toUTCString()
+  unixDate = dateObj.getTime()
+  res.json({'unix': unixDate, 'utc': utcDate})
+})
 
 
 // listen for requests :)
